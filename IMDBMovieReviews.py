@@ -74,6 +74,74 @@ bag_of_words = vect.transform(nicks_words)
 print("Dense representation of bag_of_words: {}".format(bag_of_words.toarray()))
 
 
+# In[10]:
+
+
+vect = CountVectorizer().fit(text_train)
+X_train = vect.transform(text_train)
+print("X train: \n{}".format(repr(X_train)))
+
+
+# In[12]:
+
+
+feature_names = vect.get_feature_names()
+print("Number of features:{}".format(len(feature_names)))
+print("First 50 features:\n{}".format(feature_names[:50]))
+print("Features 20010 to 20030:\n{}".format(feature_names[20010:20030]))
+print("Every 2000th feature:\n{}".format(feature_names[::2000]))
+
+
+# In[17]:
+
+
+import time
+def time_convert(sec):
+    mins = sec // 60
+    sec = sec % 60
+    hours = mins // 60
+    mins = mins % 60
+    print("Time Lapsed = {0}:{1}:{2}".format(int(hours),int(mins),sec))
+#input("Press Enter to start")
+#start_time = time.time()
+#input("Press Enter to stop")
+#end_time = time.time()
+#time_lapsed = end_time - start_time
+#time_convert(time_lapsed)
+
+
+# In[16]:
+
+
+# Finally we're machine learning... haha
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegression
+start_time = time.time()
+print("Time start:{}".format(time.time()))
+scores = cross_val_score(LogisticRegression(solver='liblinear', multi_class='auto', max_iter=150),X_train, y_train, cv=5)
+end_time = time.time()
+print("Mean cross validation accuracy: {:.2f}".format(np.mean(scores)))
+time_lapsed = end_time - start_time
+time_convert(time_lapsed)
+
+
+# In[19]:
+
+
+# Finally we're machine learning... haha
+from sklearn.model_selection import GridSearchCV
+param_grid = {'C':[0.001, 0.01, 0.1, 1, 10]}
+start_time = time.time()
+print("Time start:{}".format(time.time()))
+grid = GridSearchCV(LogisticRegression(solver='liblinear', multi_class='auto', max_iter=150), param_grid, cv=5)
+grid.fit(X_train, y_train)
+end_time = time.time()
+print("Best cross validation score: {:.2f}".format(grid.best_score_))
+print("Best parameters: {}", grid.best_params_)
+time_lapsed = end_time - start_time
+time_convert(time_lapsed)
+
+
 # In[ ]:
 
 
